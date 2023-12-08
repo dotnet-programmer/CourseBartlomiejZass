@@ -13,6 +13,9 @@ namespace MusicStore.NetFramework.WebApp
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-        }
-    }
+
+			// dodanie inicjalizatorów bazy danych - sposób 1
+			// Database.SetInitializer<StoreContext>(new StoreInitializer());            
+		}
+	}
 }

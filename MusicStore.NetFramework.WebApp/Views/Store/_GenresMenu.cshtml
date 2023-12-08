@@ -1,0 +1,18 @@
+﻿@using MusicStore.NetFramework.WebApp.Infrastructure
+
+@model IEnumerable<MusicStore.NetFramework.WebApp.Models.Genre>
+
+<nav class="genres-vertical">
+	<ul>
+		@foreach (var genre in Model)
+		{
+			<li>
+				<a href="@Url.Action("List", "Store", new { genreName = genre.Name.ToLower() })"
+				   style="background-image: url(@Url.GenreIconPath(genre.IconFileName));">
+					@genre.Name
+				</a>
+				@*@Html.ActionLink(genre.Name, "List", "Store", new { genrename = genre.Name.ToLower() }, new { style = "background-image: url(../Content/Genre-icons/" + genre.IconFileName + ");" })*@
+			</li>
+		}
+	</ul>
+</nav>
