@@ -1,0 +1,69 @@
+﻿@using MusicStore.NetFramework.WebApp.Infrastructure
+
+@model MusicStore.NetFramework.WebApp.Models.Album
+
+@{
+	ViewBag.Title = "Details";
+	Layout = "~/Views/Shared/_StoreLayout.cshtml";
+}
+
+<div id="productlist-content">
+
+	@Html.Action("GenresMenu")
+
+	<div id="productlist-rightsection">
+		<div id="breadcrumb-section">
+			<img src="@Url.Content("~/Content/Images/home-small.png")" />
+			@* INFO - Mapa strony *@
+			@Html.MvcSiteMap().SiteMapPath()
+		</div>
+
+		<section id="product-details-section">
+			<div id="product-details-left">
+
+				@*<img src="@Url.Content("~/Content/Covers/" + @Model.CoverFileName)" />*@
+				<img src="@Url.AlbumCoverPath(Model.CoverFileName)" />
+
+				<div id="product-details-share">
+					@* @Request.Url.AbsoluteUri - zwraca aktualny adres strony na której przebywamy *@
+					<a href="https://www.facebook.com/sharer/sharer.php?u=@Request.Url.AbsoluteUri" target="_blank"></a>
+					<div></div>
+					<a href="http://twitter.com/share?text=MojaNowaZdobycz:@Request.Url.AbsoluteUri" target="_blank"></a>
+				</div>
+			</div>
+
+			<div id="product-details-right">
+				<div id="product-details-names">
+					<h1> 
+						@Model.AlbumTitle
+					</h1>
+
+					<h2>
+						@Model.ArtistName
+					</h2>
+				</div>
+
+				<div id="product-details-price">
+					<div>
+						@String.Format("{0:0.##}", Model.Price)<span>PLN</span>
+					</div>
+
+					<a href="@Url.Action("AddToCart", "Cart", new { id = Model.AlbumId })"></a>
+				</div>
+
+				<div id="product-details-description">
+					@Model.Description
+				</div>
+
+				<div id="product-details-info">
+					Bezpłatna przesyłka. Czas realizacji: 24 godziny.
+				</div>
+
+				@*@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+				{
+					<a href="@Url.Action("AddProduct", "Manage", new { albumId = Model.AlbumId })" style="margin-top: 20px; font-weight: bold; display: block;">Edytuj</a>
+				}*@
+			</div>
+		</section>
+	</div>
+</div>

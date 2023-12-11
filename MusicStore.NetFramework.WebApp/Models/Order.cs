@@ -10,6 +10,9 @@ namespace MusicStore.NetFramework.WebApp.Models
 	{
 		public int OrderId { get; set; }
 
+		public string UserId { get; set; }
+		public virtual ApplicationUser User { get; set; }
+
 		[Required(ErrorMessage = "Musisz wprowadzić imię")]
 		[StringLength(100)]
 		public string FirstName { get; set; }
@@ -28,7 +31,8 @@ namespace MusicStore.NetFramework.WebApp.Models
 
 		[Required(ErrorMessage = "Musisz wprowadzić numer telefonu")]
 		[StringLength(20)]
-		[RegularExpression(@"(\+\d{2})*[\d\s-]+", ErrorMessage = "Błędny format numeru telefonu.")]
+		[RegularExpression(@"(\+\d{2})*[\d\s-]+",
+			ErrorMessage = "Błędny format numeru telefonu.")]
 		public string PhoneNumber { get; set; }
 
 		[Required(ErrorMessage = "Wprowadź swój adres e-mail.")]
@@ -40,9 +44,6 @@ namespace MusicStore.NetFramework.WebApp.Models
 		public OrderState OrderState { get; set; }
 
 		public decimal TotalPrice { get; set; }
-
-		//public string UserId { get; set; }
-		//public virtual ApplicationUser User { get; set; }
 
 		public List<OrderItem> OrderItems { get; set; }
 	}

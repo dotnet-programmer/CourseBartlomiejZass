@@ -1,25 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+﻿using System.Data.Entity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using MusicStore.NetFramework.WebApp.Models;
 
 namespace MusicStore.NetFramework.WebApp.DAL
 {
-	public class StoreContext : DbContext
+	public class StoreContext : IdentityDbContext<ApplicationUser>
 	{
 		public StoreContext() : base("StoreContext")
 		{
-
 		}
 
 		// dodanie inicjalizatorów bazy danych - sposób 3 - najczęściej używany
 		static StoreContext() => Database.SetInitializer<StoreContext>(new StoreInitializer());
 
+		public static StoreContext Create() => new StoreContext();
+
 		public DbSet<Album> Albums { get; set; }
-        public DbSet<Genre> Genres { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
-    }
+		public DbSet<Genre> Genres { get; set; }
+		public DbSet<Order> Orders { get; set; }
+		public DbSet<OrderItem> OrderItems { get; set; }
+
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+		{
+			base.OnModelCreating(modelBuilder);
+
+			// modelBuilder.Entity<ApplicationUser>().HasMany(a => a.Orders).WithRequired().WillCascadeOnDelete(true);
+			modelBuilder.Entity<Order>().HasRequired(o => o.User);
+
+			//.HasForeignKey(p => p.DepartmentId)
+			//.WillCascadeOnDelete(false);
+
+			// Change the name of the table to be Users instead of AspNetUsers
+			//modelBuilder.Entity<IdentityUser>()
+			//    .ToTable("Users");
+			//modelBuilder.Entity<ApplicationUser>()
+			//    .ToTable("Users");
+		}
+	}
 }
