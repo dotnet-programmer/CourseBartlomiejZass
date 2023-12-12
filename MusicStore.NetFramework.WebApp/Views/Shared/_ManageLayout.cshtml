@@ -1,13 +1,10 @@
 ﻿<!DOCTYPE html>
-
 <html>
 <head>
 	<title>@ViewBag.Title</title>
 	<meta name="viewport" content="width=device-width" />
 	<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" />
-
 	<link href="@Url.Content("~/Content/themes/base/jquery-ui.css")" rel="stylesheet" />
-
 	<style>
 		.manageLink {
 			height: 42px;
@@ -24,12 +21,10 @@
 			color: white;
 		}
 	</style>
-
 </head>
 <body>
 	<header>
 		<div style="overflow: hidden; margin-bottom: 30px;">
-
 			<a class="manageLink" href="@Url.Action("Index", "Home")">
 				Start
 			</a>
@@ -51,21 +46,18 @@
 			<a class="manageLink" href="@Url.Action("OrdersList", "Manage")" style="width: 100px">
 				Zamówienia
 			</a>
-
 			<a id="cart-header-link" href="@Url.Action("Index", "Cart")">
 				KOSZYK (<span id="cart-header-items-count">@Html.Action("GetCartItemsCount", "Cart")</span>)
 				<span id="cart-header-logo"></span>
 			</a>
 
 			@Html.Partial("_LoginPartial")
-
 		</div>
 
 		<div id="breadcrumb-section">
 			<img src="@Url.Content("~/Content/Images/home-small.png")" />
 			@Html.MvcSiteMap().SiteMapPath()
 		</div>
-
 	</header>
 
 	<div>
@@ -86,7 +78,7 @@
 		</div>
 
 		<div id="footer-copyright">
-			Copyright &copy; 2015 Spod Igły
+			Copyright &copy; 2023 Spod Igły
 		</div>
 	</footer>
 

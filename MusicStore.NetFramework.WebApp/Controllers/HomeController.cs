@@ -6,38 +6,47 @@ using MusicStore.NetFramework.WebApp.DAL;
 using MusicStore.NetFramework.WebApp.Infrastructure;
 using MusicStore.NetFramework.WebApp.Models;
 using MusicStore.NetFramework.WebApp.ViewModels;
+using NLog;
 
 namespace MusicStore.NetFramework.WebApp.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly StoreContext _storeContext = new StoreContext();
+		private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+		private readonly StoreContext _context;
+		private readonly ICacheProvider _cache;
+
+		public HomeController(StoreContext context, ICacheProvider cache)
+		{
+			_context = context;
+			_cache = cache;
+		}
 
 		// GET: Home
 		public ActionResult Index()
 		{
-			var genres = _storeContext.Genres.ToList();
+			_logger.Info("Visited main page");
 
 			List<Album> newArrivals;
 
-			ICacheProvider cache = new DefaultCacheProvider();
-			if (cache.IsSet(Consts.NewItemsCacheKey))
+			if (_cache.IsSet(Consts.NewItemsCacheKey))
 			{
-				newArrivals = cache.Get(Consts.NewItemsCacheKey) as List<Album>;
+				newArrivals = _cache.Get(Consts.NewItemsCacheKey) as List<Album>;
 			}
 			else
 			{
-				newArrivals = _storeContext.Albums
+				newArrivals = _context.Albums
 					.Where(x => x.IsHidden == false)
 					.OrderByDescending(a => a.DateAdded)
 					.Take(3)
 					.ToList();
 
-				cache.Set(Consts.NewItemsCacheKey, newArrivals, 30);
+				_cache.Set(Consts.NewItemsCacheKey, newArrivals, 30);
 			}
 
-			// OrderBy(x => Guid.NewGuid()) - zapewnia że dane będą w losowej kolejności
-			var bestsellers = _storeContext.Albums
+			// INFO - pobieranie danych z dazy w losowej kolejności - OrderBy(x => Guid.NewGuid())
+			var bestsellers = _context.Albums
 				.Where(x => x.IsHidden == false && x.IsBestseller)
 				.OrderBy(x => Guid.NewGuid())
 				.Take(3)
@@ -45,7 +54,7 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 
 			var vm = new HomeViewModel
 			{
-				Genres = genres,
+				Genres = _context.Genres.ToList(),
 				NewArrivals = newArrivals,
 				Bestsellers = bestsellers,
 			};

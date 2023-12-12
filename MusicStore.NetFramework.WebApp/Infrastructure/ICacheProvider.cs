@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace MusicStore.NetFramework.WebApp.Infrastructure
+﻿namespace MusicStore.NetFramework.WebApp.Infrastructure
 {
 	public interface ICacheProvider
 	{

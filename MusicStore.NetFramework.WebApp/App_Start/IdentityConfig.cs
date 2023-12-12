@@ -13,13 +13,11 @@ namespace MusicStore.NetFramework.WebApp.App_Start
 {
 	public class ApplicationUserManager : UserManager<ApplicationUser>
 	{
-		public ApplicationUserManager(IUserStore<ApplicationUser> store)
-			: base(store)
+		public ApplicationUserManager(IUserStore<ApplicationUser> store) : base(store)
 		{
 		}
 
-		public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options,
-			IOwinContext context)
+		public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
 		{
 			var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<StoreContext>()));
 			// Configure validation logic for usernames
@@ -57,8 +55,7 @@ namespace MusicStore.NetFramework.WebApp.App_Start
 			var dataProtectionProvider = options.DataProtectionProvider;
 			if (dataProtectionProvider != null)
 			{
-				manager.UserTokenProvider =
-					new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
+				manager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
 			}
 			return manager;
 		}
@@ -67,26 +64,24 @@ namespace MusicStore.NetFramework.WebApp.App_Start
 	// Configure the RoleManager used in the application. RoleManager is defined in the ASP.NET Identity core assembly
 	public class ApplicationRoleManager : RoleManager<IdentityRole>
 	{
-		public ApplicationRoleManager(IRoleStore<IdentityRole, string> roleStore)
-			: base(roleStore)
+		public ApplicationRoleManager(IRoleStore<IdentityRole, string> roleStore) : base(roleStore)
 		{
 		}
 
-		public static ApplicationRoleManager Create(IdentityFactoryOptions<ApplicationRoleManager> options, IOwinContext context) => new ApplicationRoleManager(new RoleStore<IdentityRole>(context.Get<StoreContext>()));
+		public static ApplicationRoleManager Create(IdentityFactoryOptions<ApplicationRoleManager> options, IOwinContext context)
+			=> new ApplicationRoleManager(new RoleStore<IdentityRole>(context.Get<StoreContext>()));
 	}
 
 	public class EmailService : IIdentityMessageService
 	{
-		public Task SendAsync(IdentityMessage message) =>
-			// Plug in your email service here to send an email.
-			Task.FromResult(0);
+		// Plug in your email service here to send an email.
+		public Task SendAsync(IdentityMessage message) => Task.FromResult(0);
 	}
 
 	public class SmsService : IIdentityMessageService
 	{
-		public Task SendAsync(IdentityMessage message) =>
-			// Plug in your sms service here to send a text message.
-			Task.FromResult(0);
+		// Plug in your sms service here to send a text message.
+		public Task SendAsync(IdentityMessage message) => Task.FromResult(0);
 	}
 
 	// This is useful if you do not want to tear down the database each time you run the application.
@@ -136,12 +131,14 @@ namespace MusicStore.NetFramework.WebApp.App_Start
 
 	public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
 	{
-		public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager) :
-			base(userManager, authenticationManager)
-		{ }
+		public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager) : base(userManager, authenticationManager)
+		{
+		}
 
-		public override Task<ClaimsIdentity> CreateUserIdentityAsync(ApplicationUser user) => user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
+		public override Task<ClaimsIdentity> CreateUserIdentityAsync(ApplicationUser user)
+			=> user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
 
-		public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context) => new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+		public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
+			=> new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
 	}
 }

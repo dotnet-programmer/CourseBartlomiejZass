@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
+using MusicStore.NetFramework.WebApp.Controllers;
 using MusicStore.NetFramework.WebApp.Models;
 
 namespace MusicStore.NetFramework.WebApp.ViewModels
@@ -14,13 +12,13 @@ namespace MusicStore.NetFramework.WebApp.ViewModels
 		public bool HasPassword { get; set; }
 		public SetPasswordViewModel SetPasswordViewModel { get; set; }
 		public ChangePasswordViewModel ChangePasswordViewModel { get; set; }
-		public MusicStore.NetFramework.WebApp.Controllers.ManageController.ManageMessageId? Message { get; set; }
+		public ManageController.ManageMessageId? Message { get; set; }
 		public IList<UserLoginInfo> CurrentLogins { get; set; }
 		public IList<AuthenticationDescription> OtherLogins { get; set; }
 		public bool ShowRemoveButton { get; set; }
-
 		public UserData UserData { get; set; }
 	}
+
 	public class SetPasswordViewModel
 	{
 		[Required]

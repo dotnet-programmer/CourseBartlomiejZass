@@ -3,12 +3,11 @@
 @model MusicStore.NetFramework.WebApp.Models.Album
 
 @{
-	ViewBag.Title = "Details";
+	ViewBag.Title = "Szczegóły albumu";
 	Layout = "~/Views/Shared/_StoreLayout.cshtml";
 }
 
 <div id="productlist-content">
-
 	@Html.Action("GenresMenu")
 
 	<div id="productlist-rightsection">
@@ -21,11 +20,10 @@
 		<section id="product-details-section">
 			<div id="product-details-left">
 
-				@*<img src="@Url.Content("~/Content/Covers/" + @Model.CoverFileName)" />*@
 				<img src="@Url.AlbumCoverPath(Model.CoverFileName)" />
 
 				<div id="product-details-share">
-					@* @Request.Url.AbsoluteUri - zwraca aktualny adres strony na której przebywamy *@
+					@* INFO - @Request.Url.AbsoluteUri - zwraca aktualny adres strony na której przebywamy *@
 					<a href="https://www.facebook.com/sharer/sharer.php?u=@Request.Url.AbsoluteUri" target="_blank"></a>
 					<div></div>
 					<a href="http://twitter.com/share?text=MojaNowaZdobycz:@Request.Url.AbsoluteUri" target="_blank"></a>
@@ -34,7 +32,7 @@
 
 			<div id="product-details-right">
 				<div id="product-details-names">
-					<h1> 
+					<h1>
 						@Model.AlbumTitle
 					</h1>
 
@@ -59,10 +57,10 @@
 					Bezpłatna przesyłka. Czas realizacji: 24 godziny.
 				</div>
 
-				@*@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+				@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
 				{
 					<a href="@Url.Action("AddProduct", "Manage", new { albumId = Model.AlbumId })" style="margin-top: 20px; font-weight: bold; display: block;">Edytuj</a>
-				}*@
+				}
 			</div>
 		</section>
 	</div>

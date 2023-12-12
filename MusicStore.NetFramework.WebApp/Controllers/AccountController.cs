@@ -11,18 +11,25 @@ using MusicStore.NetFramework.WebApp.ViewModels;
 
 namespace MusicStore.NetFramework.WebApp.Controllers
 {
-	// wymagaj adresu https
+	// INFO - atrybut RequireHttps - wymagaj adresu https
 	[RequireHttps]
 	public class AccountController : Controller
 	{
 		private ApplicationUserManager _userManager;
+		private ApplicationSignInManager _signInManager;
+
+		public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+		{
+			UserManager = userManager;
+			SignInManager = signInManager;
+		}
+
 		public ApplicationUserManager UserManager
 		{
 			get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
 			private set => _userManager = value;
 		}
 
-		private ApplicationSignInManager _signInManager;
 		public ApplicationSignInManager SignInManager
 		{
 			get => _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
@@ -31,10 +38,10 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 
 		private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
-		// GET: Account
-		// string returnUrl - potrzebne do przekierowania/powrotu na stronę, z której kliknięto "Zaloguj"
+		// GET: Account/Login
 		public ActionResult Login(string returnUrl)
 		{
+			// INFO - parametr returnUrl - potrzebne do przekierowania/powrotu na stronę z której kliknięto "Zaloguj" po udanym zalogowaniu się
 			ViewBag.ReturnUrl = returnUrl;
 			return View();
 		}
@@ -64,22 +71,13 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 					return RedirectToAction("SendCode", new { ReturnUrl = returnUrl });
 				case SignInStatus.Failure:
 				default:
-					// ręczne dodanie błędu do ModelState
+					// INFO - ręczne dodanie błędu do ModelState
 					ModelState.AddModelError("loginerror", "Nieudana próba logowania.");
 					return View(model);
 			}
 		}
 
-		private ActionResult RedirectToLocal(string returnUrl)
-		{
-			if (Url.IsLocalUrl(returnUrl))
-			{
-				return Redirect(returnUrl);
-			}
-			return RedirectToAction("Index", "Home");
-		}
-
-		//[AllowAnonymous]
+		[AllowAnonymous]
 		public ActionResult Register() => View();
 
 		[HttpPost]
@@ -110,14 +108,6 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 			return View(model);
 		}
 
-		private void AddErrors(IdentityResult result)
-		{
-			foreach (var error in result.Errors)
-			{
-				ModelState.AddModelError("", error);
-			}
-		}
-
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult LogOff()
@@ -126,48 +116,35 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
+		private ActionResult RedirectToLocal(string returnUrl)
+		{
+			if (Url.IsLocalUrl(returnUrl))
+			{
+				return Redirect(returnUrl);
+			}
+			return RedirectToAction("Index", "Home");
+		}
+
+		private void AddErrors(IdentityResult result)
+		{
+			foreach (var error in result.Errors)
+			{
+				ModelState.AddModelError("", error);
+			}
+		}
+
 		// INFO - logowanie za pomocą zewnętrznych serwisów - facebook, google
+
 		#region Facebook_Google
 
 		[HttpPost]
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
 		public ActionResult ExternalLogin(string provider, string returnUrl)
-			// specjalny resultat dziedziczący po ActionResult, powoduje przekierowanie do zewnętrznego serwisu wraz z wysłaniem specjalnych tokenów uwierzytelniających
+			// INFO - specjalny resultat dziedziczący po ActionResult
+			// powoduje przekierowanie do zewnętrznego serwisu wraz z wysłaniem specjalnych tokenów uwierzytelniających
 			// po przejściu na inną stronę logowania, serwis musi wiedzieć gdzie wrócić - do tego służy ExternalLoginCallback
 			=> new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
-
-		// Used for XSRF protection when adding external logins
-		private const string XsrfKey = "XsrfId";
-
-		internal class ChallengeResult : HttpUnauthorizedResult
-		{
-			public ChallengeResult(string provider, string redirectUri)
-				: this(provider, redirectUri, null)
-			{
-			}
-
-			public ChallengeResult(string provider, string redirectUri, string userId)
-			{
-				LoginProvider = provider;
-				RedirectUri = redirectUri;
-				UserId = userId;
-			}
-
-			public string LoginProvider { get; set; }
-			public string RedirectUri { get; set; }
-			public string UserId { get; set; }
-
-			public override void ExecuteResult(ControllerContext context)
-			{
-				var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
-				if (UserId != null)
-				{
-					properties.Dictionary[XsrfKey] = UserId;
-				}
-				context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
-			}
-		}
 
 		[AllowAnonymous]
 		public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
@@ -200,7 +177,7 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 					var registrationResult = await UserManager.CreateAsync(user);
 					if (registrationResult.Succeeded)
 					{
-						// powiązanie konta lokalnego z kontem zewnętrznym
+						// INFO - powiązanie konta lokalnego z kontem zewnętrznym (facebook, google)
 						registrationResult = await UserManager.AddLoginAsync(user.Id, loginInfo.Login);
 						if (registrationResult.Succeeded)
 						{
@@ -208,10 +185,45 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 							return RedirectToLocal(returnUrl);
 						}
 						else
+						{
 							throw new Exception("External provider association error");
+						}
 					}
 					else
+					{
 						throw new Exception("Registration error");
+					}
+			}
+		}
+
+		// Used for XSRF protection when adding external logins
+		private const string XsrfKey = "XsrfId";
+
+		internal class ChallengeResult : HttpUnauthorizedResult
+		{
+			public ChallengeResult(string provider, string redirectUri) : this(provider, redirectUri, null)
+			{
+			}
+
+			public ChallengeResult(string provider, string redirectUri, string userId)
+			{
+				LoginProvider = provider;
+				RedirectUri = redirectUri;
+				UserId = userId;
+			}
+
+			public string LoginProvider { get; set; }
+			public string RedirectUri { get; set; }
+			public string UserId { get; set; }
+
+			public override void ExecuteResult(ControllerContext context)
+			{
+				var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
+				if (UserId != null)
+				{
+					properties.Dictionary[XsrfKey] = UserId;
+				}
+				context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
 			}
 		}
 

@@ -50,17 +50,7 @@ namespace MusicStore.NetFramework.WebApp
 
 			// INFO - logowanie za pomocą zewnętrznych serwisów - facebook, google
 
-			// Uncomment the following lines to enable logging in with third party login providers
-			//app.UseMicrosoftAccountAuthentication(
-			//    clientId: "",
-			//    clientSecret: "");
-
-			//app.UseTwitterAuthentication(
-			//   consumerKey: "",
-			//   consumerSecret: "");
-
-			// konfiguracja konta facebookowego jako developer
-			// https://developers.facebook.com/apps
+			// konfiguracja konta facebookowego jako developer - https://developers.facebook.com/apps
 			// potrzebny NuGet - Microsoft.Owin.Security.Facebook
 			var options = new FacebookAuthenticationOptions()
 			{
@@ -71,13 +61,22 @@ namespace MusicStore.NetFramework.WebApp
 			options.Scope.Add("email");
 			app.UseFacebookAuthentication(options);
 
-			// konfiguracja konta google jako developer
-			// https://console.developers.google.com
+			// konfiguracja konta google jako developer - https://console.developers.google.com
 			// w opcji Autotized redirect uris po adresie własnej strony trzeba dopisać na końcu /signin-google
 			// potrzebny NuGet - Microsoft.Owin.Security.Google
 			app.UseGoogleAuthentication(
 				clientId: "423286183817-v47kefqspm9fme0uhrqq90k5lvrd82ib.apps.googleusercontent.com",
 				clientSecret: "UD5BxMUz_KrNV-lvFZHnnwCp");
+
+			// Uncomment the following lines to enable logging in with third party login providers
+
+			//app.UseMicrosoftAccountAuthentication(
+			//    clientId: "",
+			//    clientSecret: "");
+
+			//app.UseTwitterAuthentication(
+			//   consumerKey: "",
+			//   consumerSecret: "");
 		}
 	}
 }

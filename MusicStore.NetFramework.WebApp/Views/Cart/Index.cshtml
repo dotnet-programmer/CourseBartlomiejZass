@@ -8,12 +8,11 @@
 }
 
 <div id="productlist-content">
-
 	@Html.Action("GenresMenu", "Store")
 
 	<div id="productlist-rightsection">
 		<div id="breadcrumb-section">
-			<img src="../Content/Images/home-small.png" />
+			<img src="@Url.Content("~/Content/Images/home-small.png")" />
 			@Html.MvcSiteMap().SiteMapPath()
 		</div>
 
@@ -58,21 +57,17 @@
 	</div>
 </div>
 
-@section ScriptsBottom {
-
+@section ScriptsBottom
+{
 	@System.Web.Optimization.Scripts.Render("~/bundles/jquery")
 
 	<script type="text/javascript">
-
 		$(function () {
 			$(".removeProduct").click(function () {
-
 				var recordToDelete = $(this).attr("data-id");
-
 				if (recordToDelete != '') {
-
 					// Send post request with AJAX
-					$.post("/Cart/RemoveFromCart", { "albumID": recordToDelete },
+					$.post("/Cart/RemoveFromCart", { "albumId": recordToDelete },
 						function (response) {
 							// Success
 							if (response.RemovedItemCount == 0) {
@@ -93,13 +88,10 @@
 
 							$('#total-price-value').text(response.CartTotal);
 							$('#cart-header-items-count').text(response.CartItemsCount);
-
 						});
-
 					return false;
 				}
 			});
-
 		});
 	</script>
 }

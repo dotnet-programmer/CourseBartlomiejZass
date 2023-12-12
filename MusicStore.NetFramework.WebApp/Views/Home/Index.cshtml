@@ -19,7 +19,7 @@
 		}
 	</ul>
 	<a href="">
-		<img id="baner-main" src="../Content/Images/baner-main.png" />
+		<img id="baner-main" src="@Url.Content("~/Content/Images/baner-main.png")" />
 	</a>
 </nav>
 
@@ -30,7 +30,7 @@
 			<li>
 				<article>
 					<a class="addtocartlink" href="@Url.Action("AddToCart", "Cart", new { id = newArrival.AlbumId })">
-						<img src="../Content/Images/cart.png" />
+						<img src="@Url.Content("~/Content/Images/cart.png")" alt="cart">
 					</a>
 					<a class="productdetailslink" href="@Url.Action("Details", "Store", new { id = newArrival.AlbumId })">
 						<div class="newFlag"></div>
@@ -52,7 +52,7 @@
 			<li>
 				<article>
 					<a class="addtocartlink" href="@Url.Action("AddToCart", "Cart", new { id = bestseller.AlbumId })">
-						<img src="../Content/Images/cart.png" />
+						<img src="@Url.Content("~/Content/Images/cart.png")" alt="cart">
 					</a>
 					<a class="productdetailslink" href="@Url.Action("Details", "Store", new { id = bestseller.AlbumId })">
 						<div class="bestsellerFlag"></div>

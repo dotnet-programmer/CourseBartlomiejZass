@@ -3,32 +3,28 @@
 }
 
 <!DOCTYPE html>
-
 <html>
-
 <head>
 	<meta name="viewport" content="width=device-width" />
 	<title>@ViewBag.Title</title>
 	<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" />
-
 	@System.Web.Optimization.Styles.Render("~/Content/themes/base/css")
 </head>
-
 <body>
 	<header>
 		<div style="overflow: hidden;">
-			<a id="facebook-header" href="">
+			<a id="facebook-header" href="https://www.facebook.com/eduwebpl">
 				DOŁĄCZ DO 1500 FANÓW NA FB
 			</a>
 
-			<a id="cart-header-link" href="">
+			<a id="cart-header-link" href="@Url.Action("Index", "Cart")">
 				KOSZYK (<span id="cart-header-items-count">@Html.Action("GetCartItemsCount", "Cart")</span>)
 				<span id="cart-header-logo"></span>
 			</a>
 			@Html.Partial("_LoginPartial")
 		</div>
 		<a id="main-header-logo" href="@Url.Content("~/")">
-			<img src="../Content/Images/spodigly-logo-main.png" class="center" />
+			<img src="@Url.Content("~/Content/Images/spodigly-logo-main.png")" class="center" />
 		</a>
 	</header>
 
@@ -39,10 +35,7 @@
 	<footer>
 		<nav>
 			<ul>
-				<li>
-					@Html.ActionLink("O nas", "StaticContent", "Home", new { viewName = "onas" }, null)
-					<a href="@Url.Action("StaticContent", "Home", new { viewName = "onas" })">O nas</a>
-				</li>
+				<li>@Html.ActionLink("O nas", "StaticContent", "Home", new { viewName = "onas" }, null)</li>
 				<li><a href="@Url.Action("StaticContent", "Home", new { viewName = "kontakt" })">Kontakt</a></li>
 				<li><a href="@Url.Action("StaticContent", "Home", new { viewName = "wysylka" })">Wysyłka</a></li>
 				<li><a href="@Url.Action("StaticContent", "Home", new { viewName = "regulamin" })">Regulamin</a></li>
@@ -56,8 +49,6 @@
 			Copyright &copy; 2023 Spod Igły
 		</div>
 	</footer>
-
 	@RenderSection("ScriptsBottom", required: false)
-
 </body>
 </html>

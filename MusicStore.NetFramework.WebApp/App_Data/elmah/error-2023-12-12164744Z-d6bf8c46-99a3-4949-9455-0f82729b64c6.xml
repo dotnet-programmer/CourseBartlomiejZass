@@ -1,0 +1,1 @@
+﻿<error errorId="d6bf8c46-99a3-4949-9455-0f82729b64c6" host="Aorus" type="Info" message="2023-12-12 17:47:44.7700 INFO Server aorus:29468:49a4bc6e all the dispatchers started" source="Hangfire.Server.BackgroundServerProcess" detail="2023-12-12 17:47:44.7700 INFO Server aorus:29468:49a4bc6e all the dispatchers started" time="2023-12-12T16:47:44.7700374Z" />

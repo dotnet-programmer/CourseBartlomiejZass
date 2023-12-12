@@ -10,14 +10,12 @@ namespace MusicStore.NetFramework.WebApp.DAL
 		{
 		}
 
-		// dodanie inicjalizatorów bazy danych - sposób 3 - najczęściej używany
+		// INFO - dodanie inicjalizatorów bazy danych - sposób 3 - najczęściej używany
 		static StoreContext() => Database.SetInitializer<StoreContext>(new StoreInitializer());
 
-		public static StoreContext Create() => new StoreContext();
-
-		public DbSet<Album> Albums { get; set; }
+		public virtual DbSet<Album> Albums { get; set; }
 		public DbSet<Genre> Genres { get; set; }
-		public DbSet<Order> Orders { get; set; }
+		public virtual DbSet<Order> Orders { get; set; }
 		public DbSet<OrderItem> OrderItems { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -36,5 +34,7 @@ namespace MusicStore.NetFramework.WebApp.DAL
 			//modelBuilder.Entity<ApplicationUser>()
 			//    .ToTable("Users");
 		}
+
+		public static StoreContext Create() => new StoreContext();
 	}
 }

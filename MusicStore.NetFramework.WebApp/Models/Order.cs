@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace MusicStore.NetFramework.WebApp.Models
 {
 	public class Order
 	{
 		public int OrderId { get; set; }
-
-		public string UserId { get; set; }
-		public virtual ApplicationUser User { get; set; }
 
 		[Required(ErrorMessage = "Musisz wprowadzić imię")]
 		[StringLength(100)]
@@ -31,8 +26,7 @@ namespace MusicStore.NetFramework.WebApp.Models
 
 		[Required(ErrorMessage = "Musisz wprowadzić numer telefonu")]
 		[StringLength(20)]
-		[RegularExpression(@"(\+\d{2})*[\d\s-]+",
-			ErrorMessage = "Błędny format numeru telefonu.")]
+		[RegularExpression(@"(\+\d{2})*[\d\s-]+", ErrorMessage = "Błędny format numeru telefonu.")]
 		public string PhoneNumber { get; set; }
 
 		[Required(ErrorMessage = "Wprowadź swój adres e-mail.")]
@@ -42,14 +36,17 @@ namespace MusicStore.NetFramework.WebApp.Models
 		public string Comment { get; set; }
 		public DateTime DateCreated { get; set; }
 		public OrderState OrderState { get; set; }
-
 		public decimal TotalPrice { get; set; }
-
 		public List<OrderItem> OrderItems { get; set; }
+
+		public string UserId { get; set; }
+		public virtual ApplicationUser User { get; set; }
 	}
 
 	public enum OrderState
 	{
+		// INFO - przypisanie wyświetlanych nazw w typie enum
+		// atrybuty używane poprzez np. @Html.EnumDropDownListFor()
 		[Display(Name = "nowe")]
 		New,
 

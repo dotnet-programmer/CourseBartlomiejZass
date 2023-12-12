@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Helpers;
+﻿using System.Collections.Generic;
+using MusicStore.NetFramework.WebApp.Models;
+using Postal;
 
 namespace MusicStore.NetFramework.WebApp.ViewModels
 {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace MusicStore.NetFramework.WebApp.Models
+﻿namespace MusicStore.NetFramework.WebApp.Models
 {
 	public class OrderItem
 	{
@@ -12,9 +7,9 @@ namespace MusicStore.NetFramework.WebApp.Models
 		public decimal UnitPrice { get; set; }
 
 		public int AlbumId { get; set; }
-		public Album Album { get; set; }
+		public virtual Album Album { get; set; }
 
 		public int OrderId { get; set; }
-		public Order Order { get; set; }
+		public virtual Order Order { get; set; }
 	}
 }

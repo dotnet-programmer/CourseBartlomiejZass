@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MusicStore.NetFramework.WebApp.Models
 {
 	public class UserData
 	{
 		public string FirstName { get; set; }
-
 		public string LastName { get; set; }
-
 		public string Address { get; set; }
-
 		public string CodeAndCity { get; set; }
 
 		[RegularExpression(@"(\+\d{2})*[\d\s-]+", ErrorMessage = "Błędny format numeru telefonu.")]

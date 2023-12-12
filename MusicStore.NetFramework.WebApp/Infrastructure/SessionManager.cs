@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.SessionState;
 
@@ -8,22 +6,13 @@ namespace MusicStore.NetFramework.WebApp.Infrastructure
 {
 	public class SessionManager : ISessionManager
 	{
-		private HttpSessionState _session;
+		private readonly HttpSessionState _session;
 
-		public SessionManager()
-		{
-			_session = HttpContext.Current.Session;
-		}
+		public SessionManager() => _session = HttpContext.Current.Session;
 
-		public void Set<T>(string name, T value)
-		{
-			_session[name] = value;
-		}
+		public void Set<T>(string name, T value) => _session[name] = value;
 
-		public T Get<T>(string key)
-		{
-			return (T)_session[key];
-		}
+		public T Get<T>(string key) => (T)_session[key];
 
 		public T Get<T>(string key, Func<T> createDefault)
 		{
@@ -50,13 +39,10 @@ namespace MusicStore.NetFramework.WebApp.Infrastructure
 			}
 			catch (NullReferenceException)
 			{
-				return default(T);
+				return default;
 			}
 		}
 
-		public void Abandon()
-		{
-			_session.Abandon();
-		}
+		public void Abandon() => _session.Abandon();
 	}
 }

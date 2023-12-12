@@ -3,14 +3,14 @@
 	<div class="view-switcher ui-bar-a">
 		@if (ViewContext.HttpContext.GetOverriddenBrowser().IsMobileDevice)
 		{
-			@* Razor - @: - oznacza, że wewnątrz bloku kodu dalsza część linii będzie generowana jako HTML *@
+			@* INFO - Razor - @: - oznacza, że wewnątrz bloku kodu dalsza część linii będzie generowana jako HTML *@
 			@: Wyświetlana strona mobilna
-			@Html.ActionLink("Desktopowy widok", "SwitchView", "ViewSwitcher", new { mobile = false, returnUrl = Request.Url.PathAndQuery }, new { rel = "external" })
+			@Html.ActionLink("Przełącz widok", "SwitchView", "ViewSwitcher", new { mobile = false, returnUrl = Request.Url.PathAndQuery }, new { rel = "external" })
 		}
 		else
 		{
 			@: Wyświetlana strona klasyczna
-			@Html.ActionLink("Mobilny widok", "SwitchView", "ViewSwitcher", new { mobile = true, returnUrl = Request.Url.PathAndQuery }, new { rel = "external" })
+			@Html.ActionLink("Przełącz widok", "SwitchView", "ViewSwitcher", new { mobile = true, returnUrl = Request.Url.PathAndQuery }, new { rel = "external" })
 		}
 	</div>
 }

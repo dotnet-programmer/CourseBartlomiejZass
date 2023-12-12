@@ -6,23 +6,19 @@
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
 	<meta name="viewport" content="width=device-width" />
 	<title>@ViewBag.Title</title>
-
 	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
 	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 </head>
-
 <body>
 	@Html.Partial("_ViewSwitcher")
 	<h3 class="ui-bar ui-bar-a">Witamy w sklepie SpodIgły.pl!</h3>
 	<div class="ui-body">
 		<ul data-role="listview" data-inset="true" data-divider-theme="a">
-
 			<li data-role="list-divider">Nowości</li>
 			@foreach (var newArrival in Model.NewArrivals)
 			{
@@ -34,7 +30,6 @@
 					</a>
 				</li>
 			}
-
 			<li data-role="list-divider">Bestsellery</li>
 			@foreach (var bestseller in Model.Bestsellers)
 			{
@@ -47,9 +42,7 @@
 				</li>
 			}
 		</ul>
-
 		<br />
-
 		<ul data-role="listview" data-inset="true" data-filter-placeholder="Szukaj gatunku muzycznego..." data-filter="true">
 			@foreach (var genre in Model.Genres)
 			{

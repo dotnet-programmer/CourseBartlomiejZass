@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using MusicStore.NetFramework.WebApp.DAL;
 using MusicStore.NetFramework.WebApp.Models;
 
@@ -11,27 +10,31 @@ namespace MusicStore.NetFramework.WebApp.Infrastructure
 	{
 		public const string CartSessionKey = "CartData";
 
-		private StoreContext db;
-		private ISessionManager session;
+		private readonly StoreContext _context;
+		private readonly ISessionManager _sessionManager;
 
-		public ShoppingCartManager(ISessionManager session, StoreContext db)
+		public ShoppingCartManager(ISessionManager sessionManager, StoreContext context)
 		{
-			this.session = session;
-			this.db = db;
+			_sessionManager = sessionManager;
+			_context = context;
 		}
 
-		public void AddToCart(int albumid)
+		public void AddToCart(int albumId)
 		{
-			var cart = this.GetCart();
-
-			var cartItem = cart.Find(c => c.Album.AlbumId == albumid);
+			var cart = GetCart();
+			var cartItem = cart.Find(c => c.Album.AlbumId == albumId);
 
 			if (cartItem != null)
+			{
 				cartItem.Quantity++;
+			}
 			else
 			{
 				// Find album and add it to cart
-				var albumToAdd = db.Albums.Where(a => a.AlbumId == albumid).SingleOrDefault();
+				var albumToAdd = _context.Albums
+					.Where(a => a.AlbumId == albumId)
+					.SingleOrDefault();
+
 				if (albumToAdd != null)
 				{
 					var newCartItem = new CartItem()
@@ -45,36 +48,20 @@ namespace MusicStore.NetFramework.WebApp.Infrastructure
 				}
 			}
 
-			session.Set(CartSessionKey, cart);
+			_sessionManager.Set(CartSessionKey, cart);
 		}
 
-		public List<CartItem> GetCart()
+		public int RemoveFromCart(int albumId)
 		{
-			List<CartItem> cart;
-
-			if (session.Get<List<CartItem>>(CartSessionKey) == null)
-			{
-				cart = new List<CartItem>();
-			}
-			else
-			{
-				cart = session.Get<List<CartItem>>(CartSessionKey) as List<CartItem>;
-			}
-
-			return cart;
-		}
-
-		public int RemoveFromCart(int albumid)
-		{
-			var cart = this.GetCart();
-
-			var cartItem = cart.Find(c => c.Album.AlbumId == albumid);
+			var cart = GetCart();
+			var cartItem = cart.Find(c => c.Album.AlbumId == albumId);
 
 			if (cartItem != null)
 			{
 				if (cartItem.Quantity > 1)
 				{
 					cartItem.Quantity--;
+					return cartItem.Quantity;
 				}
 				else
 				{
@@ -83,37 +70,28 @@ namespace MusicStore.NetFramework.WebApp.Infrastructure
 			}
 
 			// Return count of removed item currently inside cart
-			return cartItem.Quantity;
+			return 0;
 		}
 
-		public decimal GetCartTotalPrice()
-		{
-			var cart = this.GetCart();
-			return cart.Sum(c => (c.Quantity * c.Album.Price));
-		}
+		public List<CartItem> GetCart() => _sessionManager.Get<List<CartItem>>(CartSessionKey) ?? new List<CartItem>();
 
-		public int GetCartItemsCount()
-		{
-			var cart = this.GetCart();
-			int count = cart.Sum(c => c.Quantity);
+		public decimal GetCartTotalPrice() => GetCart().Sum(c => (c.Quantity * c.Album.Price));
 
-			return count;
-		}
+		public int GetCartItemsCount() => GetCart().Sum(c => c.Quantity);
 
 		public Order CreateOrder(Order newOrder, string userId)
 		{
-			var cart = this.GetCart();
-
 			newOrder.DateCreated = DateTime.Now;
 			newOrder.UserId = userId;
-
-			this.db.Orders.Add(newOrder);
+			_context.Orders.Add(newOrder);
 
 			if (newOrder.OrderItems == null)
+			{
 				newOrder.OrderItems = new List<OrderItem>();
+			}
 
 			decimal cartTotal = 0;
-
+			var cart = GetCart();
 			foreach (var cartItem in cart)
 			{
 				var newOrderItem = new OrderItem()
@@ -124,20 +102,14 @@ namespace MusicStore.NetFramework.WebApp.Infrastructure
 				};
 
 				cartTotal += (cartItem.Quantity * cartItem.Album.Price);
-
 				newOrder.OrderItems.Add(newOrderItem);
 			}
 
 			newOrder.TotalPrice = cartTotal;
-
-			this.db.SaveChanges();
-
+			_context.SaveChanges();
 			return newOrder;
 		}
 
-		public void EmptyCart()
-		{
-			session.Set<List<CartItem>>(CartSessionKey, null);
-		}
+		public void EmptyCart() => _sessionManager.Set<List<CartItem>>(CartSessionKey, null);
 	}
 }

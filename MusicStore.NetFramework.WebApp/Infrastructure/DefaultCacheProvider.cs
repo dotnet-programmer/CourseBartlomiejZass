@@ -13,7 +13,6 @@ namespace MusicStore.NetFramework.WebApp.Infrastructure
 		public void Set(string key, object data, int cacheTimeMinutes)
 		{
 			var expirationTime = DateTime.Now + TimeSpan.FromMinutes(cacheTimeMinutes);
-
 			Cache.Insert(key, data, null, expirationTime, Cache.NoSlidingExpiration);
 		}
 

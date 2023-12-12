@@ -1,15 +1,13 @@
-﻿
-@{
+﻿@{
 	Layout = "~/Views/Shared/_StoreLayout.cshtml";
 }
 
 <div id="productlist-content">
-
 	@Html.Action("GenresMenu", "Store")
 
 	<div id="productlist-rightsection">
 		<div id="breadcrumb-section">
-			<img src="../Content/Images/home-small.png" />
+			<img src="@Url.Content("~/Content/Images/home-small.png")" />
 			@Html.MvcSiteMap().SiteMapPath()
 		</div>
 		<section class="content-section">
@@ -18,9 +16,7 @@
 					@RenderSection("SectionTitle", required: false)
 				</h1>
 			</div>
-
 			@RenderBody()
-
 		</section>
 	</div>
 </div>

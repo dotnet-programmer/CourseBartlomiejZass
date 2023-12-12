@@ -4,39 +4,37 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web;
-using Glimpse.AspNet.Tab;
+using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MusicStore.NetFramework.WebApp.App_Start;
 using MusicStore.NetFramework.WebApp.DAL;
 using MusicStore.NetFramework.WebApp.Infrastructure;
 using MusicStore.NetFramework.WebApp.Models;
-using System.Web.Mvc;
 using MusicStore.NetFramework.WebApp.ViewModels;
-using Microsoft.AspNet.Identity.Owin;
 
 namespace MusicStore.NetFramework.WebApp.Controllers
 {
 	[Authorize]
 	public class ManageController : Controller
 	{
-		StoreContext db = new StoreContext();
+		// Used for XSRF protection when adding external logins
+		private const string XsrfKey = "XsrfId";
 
-		private IMailService mailService;
+		private readonly StoreContext _context;
+		private readonly IMailService _mailService;
+		private ApplicationUserManager _userManager;
 
 		public ManageController(StoreContext context, IMailService mailService)
 		{
-			this.mailService = mailService;
-			this.db = context;
+			_context = context;
+			_mailService = mailService;
 		}
 
-		public ManageController(ApplicationUserManager userManager)
-		{
-			UserManager = userManager;
-		}
+		public ManageController(ApplicationUserManager userManager) => UserManager = userManager;
 
 		public enum ManageMessageId
 		{
@@ -47,37 +45,13 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 			Error
 		}
 
-		private ApplicationUserManager _userManager;
+		private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
+
 		public ApplicationUserManager UserManager
 		{
-			get
-			{
-				return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-			}
-			private set
-			{
-				_userManager = value;
-			}
+			get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+			private set => _userManager = value;
 		}
-
-		private IAuthenticationManager AuthenticationManager
-		{
-			get
-			{
-				return HttpContext.GetOwinContext().Authentication;
-			}
-		}
-
-		private bool HasPassword()
-		{
-			var user = UserManager.FindById(User.Identity.GetUserId());
-			if (user != null)
-			{
-				return user.PasswordHash != null;
-			}
-			return false;
-		}
-
 
 		// GET: Manage
 		public async Task<ActionResult> Index(ManageMessageId? message)
@@ -89,10 +63,7 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 				ViewData = (ViewDataDictionary)TempData["ViewData"];
 			}
 
-			if (User.IsInRole("Admin"))
-				ViewBag.UserIsAdmin = true;
-			else
-				ViewBag.UserIsAdmin = false;
+			ViewBag.UserIsAdmin = User.IsInRole("Admin");
 
 			var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 			if (user == null)
@@ -105,7 +76,7 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 			var model = new ManageCredentialsViewModel
 			{
 				Message = message,
-				HasPassword = this.HasPassword(),
+				HasPassword = HasPassword(),
 				CurrentLogins = userLogins,
 				OtherLogins = otherLogins,
 				ShowRemoveButton = user.PasswordHash != null || userLogins.Count > 1,
@@ -124,7 +95,6 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 				var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 				user.UserData = userData;
 				var result = await UserManager.UpdateAsync(user);
-
 				AddErrors(result);
 			}
 
@@ -210,13 +180,8 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult LinkLogin(string provider)
-		{
 			// Request a redirect to the external login provider to link a login for the current user
-			return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), User.Identity.GetUserId());
-		}
-
-		// Used for XSRF protection when adding external logins
-		private const string XsrfKey = "XsrfId";
+			=> new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), User.Identity.GetUserId());
 
 		public async Task<ActionResult> LinkLoginCallback()
 		{
@@ -251,20 +216,11 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 			return RedirectToAction("Index", new { Message = message });
 		}
 
-		private void AddErrors(IdentityResult result)
-		{
-			foreach (var error in result.Errors)
-			{
-				ModelState.AddModelError("password-error", error);
-			}
-		}
-
 		private async Task SignInAsync(ApplicationUser user, bool isPersistent)
 		{
 			AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie, DefaultAuthenticationTypes.TwoFactorCookie);
 			AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = isPersistent }, await user.GenerateUserIdentityAsync(UserManager));
 		}
-
 
 		public ActionResult OrdersList()
 		{
@@ -276,14 +232,19 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 			// For admin users - return all orders
 			if (isAdmin)
 			{
-				userOrders = db.Orders.Include("OrderItems").
-					OrderByDescending(o => o.DateCreated).ToArray();
+				userOrders = _context.Orders
+					.Include("OrderItems")
+					.OrderByDescending(o => o.DateCreated)
+					.ToArray();
 			}
 			else
 			{
 				var userId = User.Identity.GetUserId();
-				userOrders = db.Orders.Where(o => o.UserId == userId).Include("OrderItems").
-					OrderByDescending(o => o.DateCreated).ToArray();
+				userOrders = _context.Orders
+					.Where(o => o.UserId == userId)
+					.Include("OrderItems")
+					.OrderByDescending(o => o.DateCreated)
+					.ToArray();
 			}
 
 			return View(userOrders);
@@ -293,9 +254,9 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 		[Authorize(Roles = "Admin")]
 		public OrderState ChangeOrderState(Order order)
 		{
-			Order orderToModify = db.Orders.Find(order.OrderId);
+			Order orderToModify = _context.Orders.Find(order.OrderId);
 			orderToModify.OrderState = order.OrderState;
-			db.SaveChanges();
+			_context.SaveChanges();
 
 			if (orderToModify.OrderState == OrderState.Shipped)
 			{
@@ -307,7 +268,7 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 				//IMailService mailService = new HangFirePostalMailService();
 				//mailService.SendOrderShippedEmail(orderToModify);
 
-				mailService.SendOrderShippedEmail(orderToModify);
+				_mailService.SendOrderShippedEmail(orderToModify);
 
 				//dynamic email = new Postal.Email("OrderShipped");
 				//email.To = orderToModify.Email;
@@ -320,45 +281,55 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 		}
 
 		[AllowAnonymous]
-		public ActionResult SendStatusEmail(int orderid, string lastname)
+		public ActionResult SendStatusEmail(int orderId, string lastName)
 		{
 			// This could also be used (but problems when hosted on Azure Websites)
-			// if (Request.IsLocal)            
+			// if (Request.IsLocal)
 
-			var orderToModify = db.Orders.Include("OrderItems").Include("OrderItems.Album").SingleOrDefault(o => o.OrderId == orderid && o.LastName == lastname);
+			var orderToModify = _context.Orders.Include("OrderItems").Include("OrderItems.Album").SingleOrDefault(o => o.OrderId == orderId && o.LastName == lastName);
 
-			if (orderToModify == null) return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			if (orderToModify == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
 
-			OrderShippedEmail email = new OrderShippedEmail();
-			email.To = orderToModify.Email;
-			email.OrderId = orderToModify.OrderId;
-			email.FullAddress = string.Format("{0} {1}, {2}, {3}", orderToModify.FirstName, orderToModify.LastName, orderToModify.Address, orderToModify.CodeAndCity);
+			OrderShippedEmail email = new OrderShippedEmail
+			{
+				To = orderToModify.Email,
+				OrderId = orderToModify.OrderId,
+				FullAddress = string.Format("{0} {1}, {2}, {3}", orderToModify.FirstName, orderToModify.LastName, orderToModify.Address, orderToModify.CodeAndCity)
+			};
 			email.Send();
 
 			return new HttpStatusCodeResult(HttpStatusCode.OK);
 		}
 
 		[AllowAnonymous]
-		public ActionResult SendConfirmationEmail(int orderid, string lastname)
+		public ActionResult SendConfirmationEmail(int orderId, string lastName)
 		{
 			// orderid and lastname as a basic form of auth
 
 			// Also might be called by scheduler (ie. Azure scheduler), pinging endpoint and using some kind of queue / db
 
 			// This could also be used (but problems when hosted on Azure Websites)
-			// if (Request.IsLocal)            
+			// if (Request.IsLocal)
 
-			var order = db.Orders.Include("OrderItems").Include("OrderItems.Album").SingleOrDefault(o => o.OrderId == orderid && o.LastName == lastname);
+			var order = _context.Orders.Include("OrderItems").Include("OrderItems.Album").SingleOrDefault(o => o.OrderId == orderId && o.LastName == lastName);
 
-			if (order == null) return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			if (order == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
 
-			OrderConfirmationEmail email = new OrderConfirmationEmail();
-			email.To = order.Email;
-			email.Cost = order.TotalPrice;
-			email.OrderNumber = order.OrderId;
-			email.FullAddress = string.Format("{0} {1}, {2}, {3}", order.FirstName, order.LastName, order.Address, order.CodeAndCity);
-			email.OrderItems = order.OrderItems;
-			email.CoverPath = AppConfig.PhotosFolderRelative;
+			OrderConfirmationEmail email = new OrderConfirmationEmail
+			{
+				To = order.Email,
+				Cost = order.TotalPrice,
+				OrderNumber = order.OrderId,
+				FullAddress = string.Format("{0} {1}, {2}, {3}", order.FirstName, order.LastName, order.Address, order.CodeAndCity),
+				OrderItems = order.OrderItems,
+				CoverPath = AppConfig.PhotosFolderRelative
+			};
 			email.Send();
 
 			return new HttpStatusCodeResult(HttpStatusCode.OK);
@@ -367,28 +338,14 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 		[Authorize(Roles = "Admin")]
 		public ActionResult AddProduct(int? albumId, bool? confirmSuccess)
 		{
-			if (albumId.HasValue)
-				ViewBag.EditMode = true;
-			else
-				ViewBag.EditMode = false;
+			ViewBag.EditMode = albumId.HasValue;
 
-			var result = new EditProductViewModel();
-			var genres = db.Genres.ToArray();
-			result.Genres = genres;
-			result.ConfirmSuccess = confirmSuccess;
-
-			Album a;
-
-			if (!albumId.HasValue)
+			var result = new EditProductViewModel
 			{
-				a = new Album();
-			}
-			else
-			{
-				a = db.Albums.Find(albumId);
-			}
-
-			result.Album = a;
+				Genres = _context.Genres.ToArray(),
+				ConfirmSuccess = confirmSuccess,
+				Album = albumId.HasValue ? _context.Albums.Find(albumId) : new Album()
+			};
 
 			return View(result);
 		}
@@ -396,27 +353,22 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 		[HttpPost]
 		public ActionResult AddProduct(HttpPostedFileBase file, EditProductViewModel model)
 		{
+			// Saving existing entry
 			if (model.Album.AlbumId > 0)
 			{
-				// Saving existing entry
-
-				db.Entry(model.Album).State = EntityState.Modified;
-				db.SaveChanges();
+				_context.Entry(model.Album).State = EntityState.Modified;
+				_context.SaveChanges();
 				return RedirectToAction("AddProduct", new { confirmSuccess = true });
 			}
+			// Creating new entry
 			else
 			{
-				// Creating new entry
-
 				var f = Request.Form;
 				// Verify that the user selected a file
 				if (file != null && file.ContentLength > 0)
 				{
 					// Generate filename
-
-					var fileExt = Path.GetExtension(file.FileName);
-					var filename = Guid.NewGuid() + fileExt;
-
+					var filename = Guid.NewGuid() + Path.GetExtension(file.FileName);
 					var path = Path.Combine(Server.MapPath(AppConfig.PhotosFolderRelative), filename);
 					file.SaveAs(path);
 
@@ -424,39 +376,49 @@ namespace MusicStore.NetFramework.WebApp.Controllers
 					model.Album.CoverFileName = filename;
 					model.Album.DateAdded = DateTime.Now;
 
-					db.Entry(model.Album).State = EntityState.Added;
-					db.SaveChanges();
+					_context.Entry(model.Album).State = EntityState.Added;
+					_context.SaveChanges();
 
 					return RedirectToAction("AddProduct", new { confirmSuccess = true });
 				}
 				else
 				{
 					ModelState.AddModelError("", "Nie wskazano pliku.");
-					var genres = db.Genres.ToArray();
+					var genres = _context.Genres.ToArray();
 					model.Genres = genres;
 					return View(model);
 				}
 			}
-
 		}
 
 		public ActionResult HideProduct(int albumId)
 		{
-			var album = db.Albums.Find(albumId);
+			var album = _context.Albums.Find(albumId);
 			album.IsHidden = true;
-			db.SaveChanges();
-
+			_context.SaveChanges();
 			return RedirectToAction("AddProduct", new { confirmSuccess = true });
 		}
 
 		public ActionResult UnhideProduct(int albumId)
 		{
-			var album = db.Albums.Find(albumId);
+			var album = _context.Albums.Find(albumId);
 			album.IsHidden = false;
-			db.SaveChanges();
-
+			_context.SaveChanges();
 			return RedirectToAction("AddProduct", new { confirmSuccess = true });
 		}
 
+		private bool HasPassword()
+		{
+			var user = UserManager.FindById(User.Identity.GetUserId());
+			return user != null && user.PasswordHash != null;
+		}
+
+		private void AddErrors(IdentityResult result)
+		{
+			foreach (var error in result.Errors)
+			{
+				ModelState.AddModelError("password-error", error);
+			}
+		}
 	}
 }

@@ -1,0 +1,1 @@
+﻿<error errorId="e44e8413-6cb1-42ac-ae89-23287b325728" host="Aorus" type="Info" message="2023-12-12 17:47:44.6656 INFO Hangfire SQL objects installed." source="Hangfire.SqlServer.SqlServerObjectsInstaller" detail="2023-12-12 17:47:44.6656 INFO Hangfire SQL objects installed." time="2023-12-12T16:47:44.6656038Z" />

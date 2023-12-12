@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace MusicStore.NetFramework.WebApp.Models
+﻿namespace MusicStore.NetFramework.WebApp.Models
 {
 	public class CartItem
 	{

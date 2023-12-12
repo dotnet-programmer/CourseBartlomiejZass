@@ -52,14 +52,12 @@
 				<td colspan="3">
 					<div class="checkbox" style="margin-bottom: 10px;">
 					</div>
-
 					<input type="submit" value="Potwierdź" class="submitLink" style="height: 40px; margin-right: 5px;" />
 				</td>
 			</tr>
 		</table>
 	</div>
 }
-
 
 <hr />
 
@@ -132,7 +130,6 @@
 				<td colspan="3">
 					<div class="checkbox" style="margin-bottom: 10px;">
 					</div>
-
 					<input type="submit" value="Zmień" class="submitLink" style="height: 40px;" />
 				</td>
 			</tr>
@@ -195,7 +192,6 @@ else
 				<td colspan="3">
 					<div class="checkbox" style="margin-bottom: 10px;">
 					</div>
-
 					<input type="submit" value="Zmień" class="submitLink" style=" height: 40px;" />
 				</td>
 			</tr>
@@ -203,11 +199,9 @@ else
 	}
 }
 
-
 @if (Model.CurrentLogins.Count > 0)
 {
 	<hr />
-
 	<h4 style="margin-bottom: 30px">Połączone konta</h4>
 	<table style="margin-left: auto; margin-right: auto; margin-bottom: 50px">
 		<tbody>
@@ -240,11 +234,9 @@ else
 	</table>
 }
 
-
 @if (Model.OtherLogins.Count > 0)
 {
 	<hr />
-
 	<h4>Dodaj logowanie przy pomocy innego serwisu</h4>
 
 	using (Html.BeginForm("LinkLogin", "Manage"))
@@ -262,7 +254,6 @@ else
 		</div>
 	}
 }
-
 
 @section ScriptsBottom
 {
