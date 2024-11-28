@@ -59,7 +59,7 @@
 
 				@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
 				{
-					<a href="@Url.Action("AddProduct", "Manage", new { albumId = Model.AlbumId })" style="margin-top: 20px; font-weight: bold; display: block;">Edytuj</a>
+				<a href="@Url.Action("AddProduct", "Manage", new { albumId = Model.AlbumId })" style="margin-top: 20px; font-weight: bold; display: block;">Edytuj</a>
 				}
 			</div>
 		</section>

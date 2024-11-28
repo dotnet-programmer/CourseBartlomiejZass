@@ -10,12 +10,12 @@
 	<ul>
 		@foreach (var genre in Model.Genres)
 		{
-			<li>
-				<a href="@Url.Action("List", "Store", new { genreName = genre.Name.ToLower() })"
-				   style="background-image: url(@Url.GenreIconPath(genre.IconFileName)); ">
-					@genre.Name
-				</a>
-			</li>
+		<li>
+			<a href="@Url.Action("List", "Store", new { genreName = genre.Name.ToLower() })"
+			   style="background-image: url(@Url.GenreIconPath(genre.IconFileName)); ">
+				@genre.Name
+			</a>
+		</li>
 		}
 	</ul>
 	<a href="">
@@ -27,20 +27,20 @@
 	<ul class="ThreeColumnsCoversList large-cover-list">
 		@foreach (var newArrival in Model.NewArrivals)
 		{
-			<li>
-				<article>
-					<a class="addtocartlink" href="@Url.Action("AddToCart", "Cart", new { id = newArrival.AlbumId })">
-						<img src="@Url.Content("~/Content/Images/cart.png")" alt="cart">
-					</a>
-					<a class="productdetailslink" href="@Url.Action("Details", "Store", new { id = newArrival.AlbumId })">
-						<div class="newFlag"></div>
-						<img class="album-cover" src="@Url.AlbumCoverPath(newArrival.CoverFileName)" />
-						<h1>
-							@newArrival.ArtistName - @newArrival.AlbumTitle
-						</h1>
-					</a>
-				</article>
-			</li>
+		<li>
+			<article>
+				<a class="addtocartlink" href="@Url.Action("AddToCart", "Cart", new { id = newArrival.AlbumId })">
+					<img src="@Url.Content("~/Content/Images/cart.png")" alt="cart">
+				</a>
+				<a class="productdetailslink" href="@Url.Action("Details", "Store", new { id = newArrival.AlbumId })">
+					<div class="newFlag"></div>
+					<img class="album-cover" src="@Url.AlbumCoverPath(newArrival.CoverFileName)" />
+					<h1>
+						@newArrival.ArtistName - @newArrival.AlbumTitle
+					</h1>
+				</a>
+			</article>
+		</li>
 		}
 	</ul>
 </section>
@@ -49,20 +49,20 @@
 	<ul class="ThreeColumnsCoversList large-cover-list">
 		@foreach (var bestseller in Model.Bestsellers)
 		{
-			<li>
-				<article>
-					<a class="addtocartlink" href="@Url.Action("AddToCart", "Cart", new { id = bestseller.AlbumId })">
-						<img src="@Url.Content("~/Content/Images/cart.png")" alt="cart">
-					</a>
-					<a class="productdetailslink" href="@Url.Action("Details", "Store", new { id = bestseller.AlbumId })">
-						<div class="bestsellerFlag"></div>
-						<img class="album-cover" src="@Url.AlbumCoverPath(bestseller.CoverFileName)" />
-						<h1>
-							@bestseller.ArtistName - @bestseller.AlbumTitle
-						</h1>
-					</a>
-				</article>
-			</li>
+		<li>
+			<article>
+				<a class="addtocartlink" href="@Url.Action("AddToCart", "Cart", new { id = bestseller.AlbumId })">
+					<img src="@Url.Content("~/Content/Images/cart.png")" alt="cart">
+				</a>
+				<a class="productdetailslink" href="@Url.Action("Details", "Store", new { id = bestseller.AlbumId })">
+					<div class="bestsellerFlag"></div>
+					<img class="album-cover" src="@Url.AlbumCoverPath(bestseller.CoverFileName)" />
+					<h1>
+						@bestseller.ArtistName - @bestseller.AlbumTitle
+					</h1>
+				</a>
+			</article>
+		</li>
 		}
 	</ul>
 </section>

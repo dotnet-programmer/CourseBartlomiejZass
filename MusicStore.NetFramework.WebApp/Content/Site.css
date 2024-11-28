@@ -110,7 +110,6 @@ a:hover, a:visited, a:link, a:active {
 	color: black;
 }
 
-
 .clearfix:after {
 	content: "";
 	display: table;
@@ -212,7 +211,6 @@ nav.genres-horizontal ul {
 			box-shadow: inset 0 0 3px #bbbbbb;
 		}
 
-
 #productlist-content {
 	overflow: hidden;
 }
@@ -231,7 +229,6 @@ nav.genres-horizontal ul {
 		margin-left: 5px;
 		width: 200px;
 	}
-
 
 nav.genres-vertical {
 	width: 202px;
@@ -427,7 +424,6 @@ ul.small-cover-list li {
 		top: 41%;
 	}
 
-
 ul.ThreeColumnsCoversList {
 	overflow: hidden;
 	list-style-type: none;
@@ -518,7 +514,6 @@ ul.large-cover-list-bottom li {
 		bottom: 0px;
 	}
 
-
 ul.ThreeColumnsStaticCoversList {
 	overflow: hidden;
 	list-style-type: none;
@@ -534,7 +529,6 @@ ul.ThreeColumnsStaticCoversList {
 		ul.ThreeColumnsStaticCoversList li article {
 			height: 100%;
 		}
-
 
 		ul.ThreeColumnsStaticCoversList li a.productdetailslink {
 			display: block;
@@ -932,7 +926,6 @@ div.upload {
 	text-align: center;
 }
 
-
 	#login-error .validation-summary-errors li {
 		list-style-type: none;
 		font-size: 14px;
@@ -1020,7 +1013,6 @@ div.upload {
 		font-size: 10pt;
 		float: right;
 	}
-
 
 #FacebookLoginButton {
 	background-image: url(Images/fb-login.png);
@@ -1211,7 +1203,6 @@ footer {
         }
 
             nav ul li a img {
-                vertical-align: middle; 
+                vertical-align: middle;
                 margin-right: 30px;
             }*/
-

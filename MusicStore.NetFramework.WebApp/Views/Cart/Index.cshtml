@@ -23,21 +23,21 @@
 			<table id="cart-table">
 				@foreach (var cartItem in Model.CartItems)
 				{
-					<tr id="cart-row-@cartItem.Album.AlbumId">
-						<td>
-							<a href="@Url.Action("Details", "Store", new { id = cartItem.Album.AlbumId })">
-								@*<img src="@Url.Content("~/Content/Covers/" + cartItem.Album.CoverFileName)" />*@
-								<img src="@Url.Content(Url.AlbumCoverPath(cartItem.Album.CoverFileName))" />
-							</a>
-						</td>
-						<td><a href="@Url.Action("Details", "Store", new { id = cartItem.Album.AlbumId })">@cartItem.Album.AlbumTitle</a></td>
-						<td>Ilość: <span id="cart-item-count-@cartItem.Album.AlbumId">@cartItem.Quantity</span></td>
-						<td>@String.Format("{0:0.##}", cartItem.TotalPrice) zł</td>
-						<td><a class="removeProduct" data-id="@cartItem.Album.AlbumId" href="#">Usuń</a></td>
-					</tr>
+				<tr id="cart-row-@cartItem.Album.AlbumId">
+					<td>
+						<a href="@Url.Action("Details", "Store", new { id = cartItem.Album.AlbumId })">
+							@*<img src="@Url.Content("~/Content/Covers/" + cartItem.Album.CoverFileName)" />*@
+							<img src="@Url.Content(Url.AlbumCoverPath(cartItem.Album.CoverFileName))" />
+						</a>
+					</td>
+					<td><a href="@Url.Action("Details", "Store", new { id = cartItem.Album.AlbumId })">@cartItem.Album.AlbumTitle</a></td>
+					<td>Ilość: <span id="cart-item-count-@cartItem.Album.AlbumId">@cartItem.Quantity</span></td>
+					<td>@String.Format("{0:0.##}", cartItem.TotalPrice) zł</td>
+					<td><a class="removeProduct" data-id="@cartItem.Album.AlbumId" href="#">Usuń</a></td>
+				</tr>
 				}
 
-				<tr id="cart-empty-message" @if (Model.CartItems != null && Model.CartItems.Count > 0) { <text> class="hidden" </text> }>
+				<tr id="cart-empty-message" @if (Model.CartItems != null && Model.CartItems.Count > 0) { <text> class="hidden" </text>  }>
 					<td>Twój koszyk jest pusty. Może warto coś do niego dodać?</td>
 				</tr>
 			</table>
@@ -50,7 +50,7 @@
 				<a class="button-link" href="">Kontynuuj zakupy</a>
 				@if (Model.TotalPrice > 0)
 				{
-					<a class="button-link" id="cart-button-checkout" href="@Url.Action("Checkout", "Cart")">Kupuję</a>
+				<a class="button-link" id="cart-button-checkout" href="@Url.Action("Checkout", "Cart")">Kupuję</a>
 				}
 			</div>
 		</section>

@@ -32,7 +32,7 @@ namespace Postal
 			return MvcHtmlString.Create(mailtoAnchor.ToString());
 		}
 
-		private static bool IsFileName(string pathOrUrl) 
+		private static bool IsFileName(string pathOrUrl)
 			=> !(pathOrUrl.StartsWith("http:", StringComparison.OrdinalIgnoreCase) || pathOrUrl.StartsWith("https:", StringComparison.OrdinalIgnoreCase));
 	}
 }

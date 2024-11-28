@@ -33,15 +33,15 @@
 			</a>
 			@if (@User.IsInRole("Admin"))
 			{
-				<a class="manageLink" href="@Url.Action("AddProduct", "Manage")">
-					Dodaj
-				</a>
-				<a class="manageLink" href="@Url.Content("~/hangfire")">
-					Jobs
-				</a>
-				<a class="manageLink" href="@Url.Content("~/elmah")">
-					Logi
-				</a>
+			<a class="manageLink" href="@Url.Action("AddProduct", "Manage")">
+				Dodaj
+			</a>
+			<a class="manageLink" href="@Url.Content("~/hangfire")">
+				Jobs
+			</a>
+			<a class="manageLink" href="@Url.Content("~/elmah")">
+				Logi
+			</a>
 			}
 			<a class="manageLink" href="@Url.Action("OrdersList", "Manage")" style="width: 100px">
 				Zamówienia

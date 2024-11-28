@@ -5,22 +5,22 @@
 	{
 		using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
 		{
-			@Html.AntiForgeryToken()
-			<div>
-				@Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-			</div>
-			<div>
-				<a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a>
-			</div>
+	@Html.AntiForgeryToken()
+	<div>
+		@Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+	</div>
+	<div>
+		<a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a>
+	</div>
 		}
 	}
 	else
 	{
-		<div>
-			@Html.ActionLink("Rejestracja", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
-		</div>
-		<div>
-			@Html.ActionLink("Zaloguj", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
-		</div>
+	<div>
+		@Html.ActionLink("Rejestracja", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
+	</div>
+	<div>
+		@Html.ActionLink("Zaloguj", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+	</div>
 	}
 </div>

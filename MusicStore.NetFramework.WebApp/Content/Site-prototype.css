@@ -106,7 +106,6 @@ a:hover, a:visited, a:link, a:active {
 	color: black;
 }
 
-
 .clearfix:after {
 	content: "";
 	display: table;
@@ -200,7 +199,6 @@ nav.genres-horizontal ul {
 			box-shadow: inset 0 0 3px #bbbbbb;
 		}
 
-
 #productlist-content {
 	overflow: hidden;
 }
@@ -219,7 +217,6 @@ nav.genres-horizontal ul {
 		width: 200px;
 		font-size: 14px;
 	}
-
 
 nav.genres-vertical {
 	width: 202px;
@@ -278,7 +275,6 @@ ul.small-cover-list li {
 	ul.small-cover-list li a:hover h1 {
 		top: 41%;
 	}
-
 
 ul.ThreeColumnsCoversList {
 	overflow: hidden;
@@ -359,7 +355,6 @@ ul.ThreeColumnsCoversList {
 			-moz-transition: opacity 1s ease;
 			transition: opacity 1s ease;
 		}
-
 
 div.newFlag {
 	background-image: url(Images/new.png);
@@ -563,6 +558,6 @@ footer {
         }
 
             nav ul li a img {
-                vertical-align: middle; 
+                vertical-align: middle;
                 margin-right: 30px;
             }*/

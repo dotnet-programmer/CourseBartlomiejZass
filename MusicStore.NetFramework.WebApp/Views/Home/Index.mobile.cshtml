@@ -22,33 +22,33 @@
 			<li data-role="list-divider">Nowości</li>
 			@foreach (var newArrival in Model.NewArrivals)
 			{
-				<li>
-					<a href="@Url.Action("Details", "Store", new { id = newArrival.AlbumId })" data-ajax="false">
-						<img src="@Url.Content("~/Content/Covers/" + newArrival.CoverFileName)">
-						<h2>@newArrival.AlbumTitle</h2>
-						<p>@newArrival.ArtistName</p>
-					</a>
-				</li>
+			<li>
+				<a href="@Url.Action("Details", "Store", new { id = newArrival.AlbumId })" data-ajax="false">
+					<img src="@Url.Content("~/Content/Covers/" + newArrival.CoverFileName)">
+					<h2>@newArrival.AlbumTitle</h2>
+					<p>@newArrival.ArtistName</p>
+				</a>
+			</li>
 			}
 			<li data-role="list-divider">Bestsellery</li>
 			@foreach (var bestseller in Model.Bestsellers)
 			{
-				<li>
-					<a href="@Url.Action("Details", "Store", new { id = bestseller.AlbumId })" data-ajax="false">
-						<img src="@Url.Content("~/Content/Covers/" + bestseller.CoverFileName)">
-						<h2>@bestseller.AlbumTitle</h2>
-						<p>@bestseller.ArtistName</p>
-					</a>
-				</li>
+			<li>
+				<a href="@Url.Action("Details", "Store", new { id = bestseller.AlbumId })" data-ajax="false">
+					<img src="@Url.Content("~/Content/Covers/" + bestseller.CoverFileName)">
+					<h2>@bestseller.AlbumTitle</h2>
+					<p>@bestseller.ArtistName</p>
+				</a>
+			</li>
 			}
 		</ul>
 		<br />
 		<ul data-role="listview" data-inset="true" data-filter-placeholder="Szukaj gatunku muzycznego..." data-filter="true">
 			@foreach (var genre in Model.Genres)
 			{
-				<li>
-					<a href="@Url.Action("List", "Store", new { genreName = genre.Name.ToLower() })" data-ajax="false">@genre.Name</a>
-				</li>
+			<li>
+				<a href="@Url.Action("List", "Store", new { genreName = genre.Name.ToLower() })" data-ajax="false">@genre.Name</a>
+			</li>
 			}
 		</ul>
 		<br />
